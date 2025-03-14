@@ -1,1 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 @import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base{
+    html{
+        font-family: "Poppins","sans-serif";
+    }
+    body{
+        background-color: #fdfeff;
+        overflow-x: hidden;
+    }
+}
+
+
+
+@layer components{
+    .input-box{
+        @apply w-full text-sm bg-transparent border-[1.5px] px-5 py-3 rounded mb-4 outline-none
+    }
+
+    .btn-primary {
+        background-color: #2B85FF;
+        @apply w-full text-sm text-white p-2 rounded my-1 hover:bg-blue-600;
+      }
+
+    .icon-btn{
+        @apply text-xl text-slate-300 cursor-pointer
+    }
+
+    .icon-btn:hover{
+        color:#2B85FF;
+    }
+
+    .input-label{
+        @apply text-xs text-slate-400
+    }
+}
+
