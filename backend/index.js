@@ -14,7 +14,7 @@ app.use(express.json());
 
 app.post("/chat", async (req, res) => {
   try {
-    const { message, model = "qwen2.5" } = req.body;
+    const { message, model = "SpeakLeash/bielik-11b-v2.3-instruct:Q4_K_M" } = req.body;
     if (!message) {
       return res.status(400).json({ error: "Wiadomosc jest wymagana" });
     }
