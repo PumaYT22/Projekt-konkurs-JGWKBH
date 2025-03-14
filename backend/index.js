@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const port = 3000;
-const OLLAMA_URL = "http://172.16.4.182:11434";
+const OLLAMA_URL = "http://localhost:11434";
 
 app.use(express.json());
 
