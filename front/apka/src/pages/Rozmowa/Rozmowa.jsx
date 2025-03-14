@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Rozmowa.css"; 
+import Wave from './Wave.jsx';
+import Wave_gen from './Wave_gen.jsx';
 
 
 const Rozmowa = () => {
@@ -359,6 +361,12 @@ const Rozmowa = () => {
             />
           </svg>
         </button>
+      </div>
+
+      <div style={{backgroundColor:"#101828"}}>
+        <div className="siri">
+          {isTyping ? <Wave_gen /> : <Wave />}
+        </div>
       </div>
 
       <div className="relative flex-grow">
