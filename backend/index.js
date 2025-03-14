@@ -25,7 +25,7 @@ app.post("/chat", async (req, res) => {
       },
       body: JSON.stringify({
         model,
-        prompt: "pisz w języku polskim i odpowiadaj jak najkrócej" + message,
+        prompt: "pisz w języku polskim i odpowiadaj jak najkrócej, o to poprzednie wiadomosci ktore masz sobie przeanalizowac gdyz moze ci to pomoc w odpowiedzi na kolejne moje zapytanie: " + message,
         stream: false,
       }),
     });
