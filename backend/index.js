@@ -26,7 +26,7 @@ app.post("/chat", async (req, res) => {
       },
       body: JSON.stringify({
         model,
-        prompt: sysContext + message,
+        prompt: message,
         stream: false,
       }),
     });
