@@ -8,7 +8,7 @@ const Rozmowa = () => {
   const [activeChat, setActiveChat] = useState(0);
   const [isWaiting, setIsWaiting] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [showTabMenu, setShowTabMenu] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
