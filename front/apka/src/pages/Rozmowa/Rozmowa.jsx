@@ -357,7 +357,7 @@ const Rozmowa = () => {
         </button>
       </div>
 
-      <div className="relative flex-grow overflow-hidden">
+      <div className="relative flex-grow">
         {/* Tab options menu */}
         {showTabMenu && (
           <div
