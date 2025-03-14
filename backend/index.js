@@ -1,3 +1,4 @@
+const config = require("./config.json");
 const express = require("express");
 const app = express();
 const port = 3000;
@@ -25,7 +26,7 @@ app.post("/chat", async (req, res) => {
       },
       body: JSON.stringify({
         model,
-        prompt: message,
+        prompt: sysContext + message,
         stream: false,
       }),
     });

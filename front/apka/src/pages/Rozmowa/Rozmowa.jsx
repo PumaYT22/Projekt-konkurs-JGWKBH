@@ -7,8 +7,8 @@ const Rozmowa = () => {
   const [chats, setChats] = useState([]);
   const [activeChat, setActiveChat] = useState(0);
   const [isWaiting, setIsWaiting] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [isTyping, setIsTyping] = useState(false); // halat
+  const [darkMode, setDarkMode] = useState(true);
   const [showTabMenu, setShowTabMenu] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -129,16 +129,20 @@ const Rozmowa = () => {
     const sentMessage = message;
     setMessage("");
 
+    const messageHistory = updatedChats[activeChat].messages
+      .map((msg) => msg.text)
+      .join("\n");
+
     try {
       // Simulate typing effect
-      setIsTyping(true);
+      setIsTyping(true); // halat 
 
       const response = await fetch("http://172.16.4.182:3000/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: sentMessage }),
+        body: JSON.stringify({ message: messageHistory+sentMessage }),
       });
 
       if (!response.ok) {
