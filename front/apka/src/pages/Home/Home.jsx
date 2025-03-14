@@ -10,6 +10,7 @@ import Toast from '../../components/ToastMessage/Toast'
 import { ToastContainer, toast } from 'react-toastify';
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
 import AddNotesImg from '../../assets/add-note.svg'
+import NoDataImg from '../../assets/no-data.svg'
 
 const Home = () => {
   
@@ -27,6 +28,8 @@ const Home = () => {
 
       const [allNotes, setAllNotes] = useState([]);
       const [userInfo,setUserInfo]=useState(null);
+
+      const [isSearch,setIsSearch]=useState(false)
 
       const navigate=useNavigate();
 
@@ -101,6 +104,45 @@ const Home = () => {
         }
       }
 
+      const onSearchNote = async (query) => {
+        try {
+            const response = await axiosInstance.get("/search-notes", {
+                params: { query} // Dodaj .trim() i explicite podaj parametr
+            });
+   
+            
+            if (response.data.notes) {
+                setIsSearch(true);
+                setAllNotes(response.data.notes);
+            }
+        } catch (error) {
+            console.error("Błąd wyszukiwania:", error.response?.data?.message || error.message);
+        }
+    };
+
+
+        const updateIsPinned=async (noteData)=>{
+            const noteId=noteData._id
+        try{
+            const response=await axiosInstance.put("/update-note-pinned/"+noteId,{
+               isPinned:!noteData.isPinned 
+            })
+    
+            if(response.data && response.data.note){
+                    toast.success("Zaktualizowano pinezkę!");
+                    getAllNotes()
+                    onClose()
+            }
+        }catch(error){
+           console.log(error)
+        }
+        }
+
+      const handleClearSearch=()=>{
+        setIsSearch(false);
+        getAllNotes();
+      }
+
       useEffect(() => {
         getAllNotes()
         getuserinfo()
@@ -112,7 +154,7 @@ const Home = () => {
 
   return (
     <>
-        <Navbar userInfo={userInfo}></Navbar>
+        <Navbar userInfo={userInfo} handleClearSearch={handleClearSearch} onSearchNote={onSearchNote}></Navbar>
 
         <div className='container mx-auto'>
            {allNotes.length>0 ? <div className='grid grid-cols-3 gap-4 mt-8'>
@@ -126,14 +168,14 @@ const Home = () => {
                  isPinned={item.isPinned}
                  onEdit={()=>handleEdit(item)}
                  onDelete={()=>deleteNote(item)}
-                 onPinNote={()=>{}}
+                 onPinNote={()=>updateIsPinned(item)}
              />
             ))}
            
             
             
-            </div>:<EmptyCard imgSrc={AddNotesImg}
-            message={"Rozpocznij tworzyć swoje notatki! Po prostu kliknij guzik Dodaj i JUŻ! Ja ci w tym wszystkim pomogę!!"}
+            </div>:<EmptyCard imgSrc={isSearch ? NoDataImg : AddNotesImg}
+            message={isSearch ? 'Brak takich notatek':"Rozpocznij tworzyć swoje notatki! Po prostu kliknij guzik Dodaj i JUŻ! Ja ci w tym wszystkim pomogę!!"}
             ></EmptyCard>}
         </div>
 
