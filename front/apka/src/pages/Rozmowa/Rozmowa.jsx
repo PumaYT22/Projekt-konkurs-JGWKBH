@@ -363,7 +363,7 @@ const Rozmowa = () => {
         </button>
       </div>
 
-      <div style={{backgroundColor:"#101828"}}>
+      <div className="bg-transparent">
         <div className="siri">
           {isTyping ? <Wave_gen /> : <Wave />}
         </div>
