@@ -1,15 +1,15 @@
-import express from "express";
+const express = require("express");
 const app = express();
 const port = 3000;
-const OLLAMA_URL = "http://localhost:11434";
+const OLLAMA_URL = "http://172.16.4.182:11434";
 
 app.use(express.json());
 
 app.post("/chat", async (req, res) => {
   try {
-    const { message, model = "-" } = req.body;
+    const { message, model = "qwen2.5" } = req.body;
     if (!message) {
-      return res.status(400).json({ error: "Wiadomosc jest"});
+      return res.status(400).json({ error: "Wiadomosc jest wymagana" });
     }
     const response = await fetch(`${OLLAMA_URL}/api/generate`, {
       method: "POST",
@@ -28,5 +28,18 @@ app.post("/chat", async (req, res) => {
       console.error("Ollama blad odpowiedzi: ", errorText);
       throw new Error(`Ollama blad: ${response.status} - ${errorText}`);
     }
-  } catch (error) {}
+
+    const data = await response.json();
+    res.json({ response: data.response });
+  } catch (error) {
+    console.error("Detailed chat error: ", error);
+    res.status(500).json({
+      error: "Failed to get response from Ollama",
+      datails: error.message,
+    });
+  }
+});
+
+app.listen(port, () => {
+  console.log("serwer is running on port: ", port);
 });
