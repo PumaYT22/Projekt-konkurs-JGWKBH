@@ -309,6 +309,41 @@ app.put('/update-note-pinned/:noteId',authenticateToken,async (req,res)=>{
     }
 })
 
+
+app.get("/search-notes", authenticateToken, async (req, res) => {
+    try {
+        const user = req.user; // Pobierz cały obiekt użytkownika
+        const { query } = req.query; // Zmiana z req.body na req.query
+
+        if (!query) {
+            return res.status(400).json({ 
+                error: true, 
+                message: "Potrzeba wpisania!" 
+            });
+        }
+
+        const matchingNotes = await Note.find({
+            userId: user._id, // Załóżmy, że user zawiera pole _id
+            $or: [
+                { title: { $regex: new RegExp(query, "i") } },
+                { content: { $regex: new RegExp(query, "i") } },
+            ],
+        });
+
+        return res.json({
+            error: false,
+            notes: matchingNotes,
+            message: "Sukces",
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Error",
+        });
+    }
+});
+
 app.listen(8000);
 
 module.exports=app
