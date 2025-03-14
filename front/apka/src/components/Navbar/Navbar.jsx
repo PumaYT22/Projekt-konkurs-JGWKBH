@@ -1,15 +1,16 @@
-import React,{useNavigate, useState} from 'react'
+import React,{useState} from 'react'
 import ProfileInfo from '../Cards/ProfileInfo'
 import SerachBar from '../SearchBar/SerachBar'
+import {useNavigate} from 'react-router-dom'
 
-
-const Navbar = () => {
+const Navbar = ({userInfo}) => {
 
   const [serachQuery,setSerachQuery]=useState("")
 
-  const navigate= useNavigate;
+  const navigate= useNavigate();
 
   const onLogout=() =>{
+    localStorage.clear()
     navigate("/login")
   }
 
@@ -33,7 +34,7 @@ const Navbar = () => {
           handleSerach={handleSerach}
           onClearSerach={onClearSerach}
         ></SerachBar>
-        <ProfileInfo onLogout={onLogout}></ProfileInfo>
+        <ProfileInfo userInfo={userInfo} onLogout={onLogout}></ProfileInfo>
     </div>
   )
 }
