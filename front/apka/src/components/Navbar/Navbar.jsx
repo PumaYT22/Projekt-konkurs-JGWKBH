@@ -28,7 +28,7 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
   }
   
   return (
-    <div className='bg-white shadow-md sticky top-0 '>
+    <div className='bg-white shadow-md top-0 z-1'>
       {/* Desktop/Tablet Navbar */}
       <div className='container mx-auto flex flex-col lg:flex-row items-center justify-between px-4 py-3'>
         <div className='flex w-full lg:w-auto justify-between items-center'>
