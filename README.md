@@ -21,6 +21,10 @@
 
 ## Pobieranie servera SI
 1. Pobierz Ollama `(https://ollama.com/download)`
-2. Zainstaluj na komputerze systen Ollama
-3. Otwórz cmd i pobierz model językowy `ollama run deepseek-r1:8b`
+2. ![image](https://github.com/user-attachments/assets/6215dd22-1ac5-49a2-9e10-eba93224e549)
+3. 
+4. Zainstaluj na komputerze systen Ollama
+5. ![image](https://github.com/user-attachments/assets/d179cf7f-47b7-4b79-b908-b733f2a56ed9)
+6. 
+7. Otwórz cmd i pobierz model językowy `ollama run deepseek-r1:8b`
 
