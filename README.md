@@ -43,6 +43,7 @@ cd apka
 ```bash
 npm install tailwindcss @tailwindcss/vite
 npm i react-router-dom
+npm i vite
 npm i
 ```
 
