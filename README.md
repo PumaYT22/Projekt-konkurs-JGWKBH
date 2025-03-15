@@ -54,7 +54,7 @@ npm run dev
 
 7. Otwórz przeglądarkę i przejdź pod adres podany w terminalu (zwykle `http://localhost:5173/`)
 
-![Widok aplikacji frontendowej](https://github.com/user-attachments/assets/6215dd22-1ac5-49a2-9e10-eba93224e549)
+![Widok aplikacji frontendowej](https://github.com/user-attachments/assets/2bb0ee01-f345-4951-83fe-9422c2584436)
 
 ## Uruchomienie backendu
 
