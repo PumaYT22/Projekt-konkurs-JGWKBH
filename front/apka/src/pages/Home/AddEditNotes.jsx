@@ -3,6 +3,7 @@ import { MdClose, MdOutlineAutoAwesome } from 'react-icons/md';
 import { FaSave } from 'react-icons/fa';
 import axiosInstance from '../../utils/axiosInstance';
 import { toast } from 'react-toastify';
+import TagInput from '../../components/input/TagInput';
 
 const AddEditNotes = ({ getAllNotes, noteData, type, onClose }) => {
   const [title, setTitle] = useState(noteData?.title || "");
@@ -87,8 +88,8 @@ const AddEditNotes = ({ getAllNotes, noteData, type, onClose }) => {
   };
 
   const handleAddNote = () => {
-    if(title.length>10){
-        setError("Maksymalna długość to 10 znaków");
+    if(title.length>20){
+        setError("Maksymalna długość to 20 znaków");
       return;
     }
 
@@ -188,6 +189,7 @@ const AddEditNotes = ({ getAllNotes, noteData, type, onClose }) => {
           value={tags}
           onChange={({ target }) => setTags(target.value)}
         />
+        <TagInput></TagInput>
       </div>
 
       {/* Error display */}
