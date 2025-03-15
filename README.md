@@ -17,5 +17,4 @@
 2. Komendą cd przejdź przez `cd Projekt-konkurs-JGWKBH` > `cd backend`
 3. Wpisz i zainstaluj `npm i nodemon`
 4. wpisz i uruchom usługę `npm run start`
-6. Wpisz i uruchom `npm run dev`
 
