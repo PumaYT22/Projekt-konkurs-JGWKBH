@@ -135,7 +135,7 @@ const Rozmowa = () => {
       // Simulate typing effect
       setIsTyping(true); // halat
 
-      const response = await fetch("http://192.168.77.237:3000/chat", {
+      const response = await fetch("http://172.16.4.182:3000/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
