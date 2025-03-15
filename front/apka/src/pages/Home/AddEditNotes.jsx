@@ -12,7 +12,7 @@ const AddEditNotes = ({ getAllNotes, noteData, type, onClose }) => {
   const [error, setError] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Fixed AI content generation function
+
   const generateContentByAI = async () => {
     if (!aiPrompt.trim()) {
       toast.error("Wpisz prompt, aby wygenerować treść");
@@ -21,8 +21,8 @@ const AddEditNotes = ({ getAllNotes, noteData, type, onClose }) => {
     
     setIsGenerating(true);
     try {
-      // Fixed API call with proper error handling
-      const response = await fetch("http://172.16.4.182:3000/chat", {
+     
+      const response = await fetch("http://localhost:8000/chat", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -87,6 +87,11 @@ const AddEditNotes = ({ getAllNotes, noteData, type, onClose }) => {
   };
 
   const handleAddNote = () => {
+    if(title.length>10){
+        setError("Maksymalna długość to 10 znaków");
+      return;
+    }
+
     if (!title) {
       setError("Podaj tytuł!");
       return;
@@ -129,7 +134,7 @@ const AddEditNotes = ({ getAllNotes, noteData, type, onClose }) => {
         />
       </div>
 
-      {/* AI Prompt section with improved styling */}
+      {/* AI  */}
       <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
         <label className="block text-sm font-medium text-gray-700 mb-1">
           <span className="flex items-center gap-2">
@@ -137,7 +142,7 @@ const AddEditNotes = ({ getAllNotes, noteData, type, onClose }) => {
             Generowanie treści przez AI
           </span>
         </label>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <input
             type="text"
             className="flex-grow p-3 border border-gray-300 rounded-md text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"

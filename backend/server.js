@@ -18,6 +18,8 @@ const app=express();
 const jwt=require("jsonwebtoken")
 const {authenticateToken} =require("./utilities")
 
+const OLLAMA_URL = "http://localhost:11434";
+
 app.use(express.json());
 
 app.use(
@@ -29,6 +31,61 @@ app.use(
 app.get("/",(req,res)=>{
     res.json({data:"czesc"})
 })
+
+
+app.post("/chat", async (req, res) => {
+    try {
+      const { message, model = "deepseek-r1:8b" } = req.body;
+      if (!message) {
+        return res.status(400).json({ error: "Wiadomosc jest wymagana" });
+      }
+  
+      // Sprawdzamy, czy użytkownik prosi o notatkę
+      const isNoteRequest = message.toLowerCase().includes("notatka") || 
+                            message.toLowerCase().includes("notatkę") ||
+                            message.toLowerCase().includes("notatki");
+      
+      // Instrukcja systemowa zależna od rodzaju zapytania
+      let systemInstruction = "Odpowiadaj tylko w języku polskim.";
+      if (isNoteRequest) {
+        systemInstruction += " Przygotuj odpowiedź w formacie Markdown.";
+      }
+      
+      const fullPrompt = `${systemInstruction}\n\nUżytkownik: ${message}`;
+      
+      const response = await fetch(`${OLLAMA_URL}/api/generate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model,
+          prompt: fullPrompt,
+          stream: false,
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Ollama blad odpowiedzi: ", errorText);
+        throw new Error(`Ollama blad: ${response.status} - ${errorText}`);
+      }
+      
+      const data = await response.json();
+      
+      // Usuwamy tekst pomiędzy znacznikami <think>
+      let cleanedResponse = data.response;
+      cleanedResponse = cleanedResponse.replace(/<think>[\s\S]*?<\/think>/g, "");
+      
+      res.json({ response: cleanedResponse });
+    } catch (error) {
+      console.error("Detailed chat error: ", error);
+      res.status(500).json({
+        error: "Failed to get response from Ollama",
+        details: error.message,
+      });
+    }
+  });
 
 
 //konto
@@ -99,7 +156,7 @@ app.post("/login",async (req,res)=>{
     if (userInfo.email===email && userInfo.password===password) { 
         const user = {user: userInfo};
         const accessToken=jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "36000",
+        expiresIn: "3600000",
         });
 
         return res.json({
@@ -310,23 +367,48 @@ app.put('/update-note-pinned/:noteId',authenticateToken,async (req,res)=>{
 })
 
 
-app.get("/search-notes", authenticateToken, async (req, res) => {
+
+app.get("/get-note/:id", authenticateToken, async (req, res) => {
     try {
-        const user = req.user; // Pobierz cały obiekt użytkownika
-        const { query } = req.query; // Zmiana z req.body na req.query
-
-        if (!query) {
-            return res.status(400).json({ 
-                error: true, 
-                message: "Potrzeba wpisania!" 
-            });
+        const noteId = req.params.id;
+        const { user } = req.user; // Extract user from req.user
+        
+        const note = await Note.findById(noteId);
+        
+        if (!note) {
+          return res.status(404).json({ error: true, message: 'Notatka nie została znaleziona' });
         }
+        
+      
+        if (note.userId.toString() !== user._id.toString()) {
+          return res.status(403).json({ error: true, message: 'Brak dostępu do tej notatki' });
+        }
+        
+        return res.json({ note });
+      } catch (error) {
+        console.error('Error fetching note:', error);
+        return res.status(500).json({ error: true, message: 'Wystąpił błąd podczas pobierania notatki' });
+      }
+});
 
+
+app.get("/search-notes", authenticateToken, async (req, res) => {
+    const user = req.user; 
+    const { query } = req.query;
+
+    if (!query?.trim()) { // Dodatkowe sprawdzenie białych znaków
+        return res.status(400).json({ 
+            error: true, 
+            message: "Potrzeba wpisania!" 
+        });
+    }
+
+    try {
         const matchingNotes = await Note.find({
-            userId: user._id, // Załóżmy, że user zawiera pole _id
+            userId: user._id,
             $or: [
-                { title: { $regex: new RegExp(query, "i") } },
-                { content: { $regex: new RegExp(query, "i") } },
+                { title: { $regex: query, $options: "i" } }, // Optymalizacja zapytania
+                { content: { $regex: query, $options: "i" } },
             ],
         });
 
