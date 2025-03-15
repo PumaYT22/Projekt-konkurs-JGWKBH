@@ -134,7 +134,7 @@ const Home = () => {
             
             const response = await axiosInstance.get("/search-notes", {
                 params: { 
-                    query: query.trim()
+                    q: query.trim()
                 }
             });
                 

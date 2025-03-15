@@ -393,35 +393,38 @@ app.get("/get-note/:id", authenticateToken, async (req, res) => {
 
 
 app.get("/search-notes", authenticateToken, async (req, res) => {
-    const user = req.user; 
-    const { query } = req.query;
-
-    if (!query?.trim()) { // Dodatkowe sprawdzenie białych znaków
-        return res.status(400).json({ 
-            error: true, 
-            message: "Potrzeba wpisania!" 
-        });
-    }
-
     try {
-        const matchingNotes = await Note.find({
+        const { user } = req.user;
+        const { q } = req.query;
+
+        if (!q) {
+            return res.status(400).json({ 
+                error: true, 
+                message: "Wyszukiwana fraza jest wymagana" 
+            });
+        }
+
+        // Szukaj w tytule, treści i tagach
+        const notes = await Note.find({
             userId: user._id,
             $or: [
-                { title: { $regex: query, $options: "i" } }, // Optymalizacja zapytania
-                { content: { $regex: query, $options: "i" } },
-            ],
-        });
+                { title: { $regex: q, $options: "i" } },
+                { content: { $regex: q, $options: "i" } },
+                { tags: { $regex: q, $options: "i" } }
+            ]
+        }).sort({ isPinned: -1 });
 
         return res.json({
             error: false,
-            notes: matchingNotes,
-            message: "Sukces",
+            notes,
+            message: `Znaleziono ${notes.length} notatek dla frazy "${q}"`
         });
+
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            error: true,
-            message: "Internal Server Error",
+        console.error("Błąd wyszukiwania:", error);
+        return res.status(500).json({ 
+            error: true, 
+            message: "Błąd serwera podczas wyszukiwania" 
         });
     }
 });
