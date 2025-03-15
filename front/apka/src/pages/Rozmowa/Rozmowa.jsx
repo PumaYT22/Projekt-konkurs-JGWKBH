@@ -129,7 +129,7 @@ const Rozmowa = () => {
 
     const messageHistory = updatedChats[activeChat].messages
       .map((msg) => msg.text)
-      .join("\n");
+      .join(" ");
 
     try {
       // Simulate typing effect
