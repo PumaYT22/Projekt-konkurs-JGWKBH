@@ -54,7 +54,6 @@ npm run dev
 
 7. Otwórz przeglądarkę i przejdź pod adres podany w terminalu (zwykle `http://localhost:5173/`)
 
-![Widok aplikacji frontendowej](https://github.com/user-attachments/assets/2bb0ee01-f345-4951-83fe-9422c2584436)
 
 ## Uruchomienie backendu
 
@@ -95,7 +94,6 @@ Projekt wykorzystuje Ollama jako lokalny serwer SI do przetwarzania danych.
 
 1. Pobierz i zainstaluj Ollama ze strony [https://ollama.com/download](https://ollama.com/download)
 
-![Strona pobierania Ollama](https://github.com/user-attachments/assets/6215dd22-1ac5-49a2-9e10-eba93224e549)
 
 2. Po instalacji uruchom aplikację Ollama
 
