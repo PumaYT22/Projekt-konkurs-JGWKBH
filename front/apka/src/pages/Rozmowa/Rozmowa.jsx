@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./Rozmowa.css"; 
-import Wave from './Wave.jsx';
-import Wave_gen from './Wave_gen.jsx';
-
+import "./Rozmowa.css";
+import Wave from "./Wave.jsx";
+import Wave_gen from "./Wave_gen.jsx";
 
 const Rozmowa = () => {
   const [message, setMessage] = useState("");
@@ -10,7 +9,7 @@ const Rozmowa = () => {
   const [activeChat, setActiveChat] = useState(0);
   const [isWaiting, setIsWaiting] = useState(false);
   const [isTyping, setIsTyping] = useState(false); // halat
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
   const [showTabMenu, setShowTabMenu] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -47,7 +46,6 @@ const Rozmowa = () => {
     }
   }, []);
 
-  // Save to localStorage whenever state changes
   useEffect(() => {
     localStorage.setItem("chatDarkMode", JSON.stringify(darkMode));
   }, [darkMode]);
@@ -60,12 +58,10 @@ const Rozmowa = () => {
     localStorage.setItem("activeChat", JSON.stringify(activeChat));
   }, [activeChat]);
 
-  // Auto-scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom();
   }, [chats, isWaiting, activeChat]);
 
-  // Focus input on load and chat change
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeChat]);
@@ -86,17 +82,18 @@ const Rozmowa = () => {
     setActiveChat(chats.length);
   };
 
+  useEffect(() => {
+    createNewChat();
+  }, []);
+
   const deleteChat = (index) => {
     if (chats.length === 1) {
-      // If it's the last chat, just clear it
       setChats([{ name: "Nowa rozmowa", messages: [] }]);
       setActiveChat(0);
     } else {
-      // Remove the chat
       const newChats = chats.filter((_, i) => i !== index);
       setChats(newChats);
 
-      // Adjust active chat if needed
       if (activeChat === index) {
         setActiveChat(index === 0 ? 0 : index - 1);
       } else if (activeChat > index) {
@@ -118,7 +115,6 @@ const Rozmowa = () => {
   const sendMessage = async () => {
     if (!message.trim()) return;
 
-    // Add user message to current chat
     const updatedChats = [...chats];
     updatedChats[activeChat].messages.push({
       sender: "user",
@@ -133,18 +129,18 @@ const Rozmowa = () => {
 
     const messageHistory = updatedChats[activeChat].messages
       .map((msg) => msg.text)
-      .join("\n");
+      .join(" ");
 
     try {
       // Simulate typing effect
-      setIsTyping(true); // halat 
+      setIsTyping(true); // halat
 
       const response = await fetch("http://localhost:8000/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: messageHistory+sentMessage }),
+        body: JSON.stringify({ message: messageHistory + sentMessage }),
       });
 
       if (!response.ok) {
@@ -153,7 +149,6 @@ const Rozmowa = () => {
 
       const data = await response.json();
 
-      // After small delay to show typing indicator
       setTimeout(() => {
         setIsTyping(false);
         const updatedChatsWithResponse = [...chats];
@@ -363,10 +358,8 @@ const Rozmowa = () => {
         </button>
       </div>
 
-      <div style={{backgroundColor:"#101828"}}>
-        <div className="siri">
-          {isTyping ? <Wave_gen /> : <Wave />}
-        </div>
+      <div className="bg-transparent">
+        <div className="siri">{isTyping ? <Wave_gen /> : <Wave />}</div>
       </div>
 
       <div className="relative flex-grow">
