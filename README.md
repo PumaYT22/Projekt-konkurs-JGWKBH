@@ -137,5 +137,39 @@ Projekt-konkurs-JGWKBH/
 - Upewnij się, że aplikacja jest uruchomiona w tle
 
 ---
+## Moduły zawarte w projekcie
+├── @capacitor/android@7.1.0
+├── @capacitor/app@7.0.0
+├── @capacitor/cli@7.1.0
+├── @capacitor/core@7.1.0
+├── @capacitor/http@0.0.2
+├── @capacitor/ios@7.1.0
+├── @eslint/js@9.22.0
+├── @tailwindcss/typography@0.5.16
+├── @tailwindcss/vite@4.0.14
+├── @types/react-dom@19.0.4
+├── @types/react@19.0.10
+├── @vitejs/plugin-react@4.3.4
+├── autoprefixer@10.4.21
+├── axios@1.8.3
+├── capacitor@0.5.6
+├── eslint-plugin-react-hooks@5.2.0
+├── eslint-plugin-react-refresh@0.4.19
+├── eslint@9.22.0
+├── globals@15.15.0
+├── moment@2.30.1
+├── postcss@8.5.3
+├── react-dom@19.0.0
+├── react-icons@5.5.0
+├── react-markdown@10.1.0
+├── react-modal@3.16.3
+├── react-router-dom@7.3.0
+├── react-toastify@11.0.5
+├── react@19.0.0
+├── rehype-raw@7.0.0
+├── remark-gfm@4.0.1
+├── tailwindcss@4.0.14
+└── vite@6.2.2
+---
 
 W przypadku innych problemów, odwiedź [repozytorium projektu](https://github.com/username/Projekt-konkurs-JGWKBH/issues) lub skontaktuj się z autorami.
