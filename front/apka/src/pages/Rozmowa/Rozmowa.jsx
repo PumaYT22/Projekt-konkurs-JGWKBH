@@ -3,7 +3,7 @@ import "./Rozmowa.css";
 import Wave from "./Wave.jsx";
 import Wave_gen from "./Wave_gen.jsx";
 import axiosInstance from "../../utils/axiosInstance.js";
-import {useNavigate, useLocation} from 'react-router-dom'
+import {useNavigate, useLocation,Link} from 'react-router-dom'
 
 const Rozmowa = () => {
   const [message, setMessage] = useState("");
@@ -255,6 +255,7 @@ const Rozmowa = () => {
           darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
         } shadow-md`}
       >
+        <Link to="/dashboard">
         <div className="flex items-center space-x-3">
           <h1
             className={`text-xl font-bold ${
@@ -263,7 +264,7 @@ const Rozmowa = () => {
           >
             AurionAI
           </h1>
-        </div>
+        </div></Link>
         <div className="flex space-x-3">
           <button
             onClick={() => setDarkMode(!darkMode)}

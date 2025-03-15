@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axiosInstance from '../../utils/axiosInstance'
 import moment from 'moment'
-import { MdOutlinePushPin, MdCreate, MdDelete, MdArrowBack, MdOutlineAutoAwesomeMotion, MdQuiz } from 'react-icons/md'
+import { MdOutlinePushPin, MdCreate, MdDelete, MdArrowBack, MdOutlineAutoAwesomeMotion, MdQuiz, MdCheckCircle, MdCancel, MdDone } from 'react-icons/md'
 import Navbar from '../../components/Navbar/Navbar'
 import { toast, ToastContainer } from 'react-toastify'
 import Modal from 'react-modal'
@@ -24,6 +24,8 @@ const NoteDetail = () => {
 
   const [quizQuestions, setQuizQuestions] = useState([]);
   const [quizLoading, setQuizLoading] = useState(false);
+  const [userAnswers, setUserAnswers] = useState({});
+const [quizCompleted, setQuizCompleted] = useState(false);
   
 
   const generateSummary = async () => {
@@ -62,56 +64,100 @@ const NoteDetail = () => {
   };
 
 
-  const generateQuiz = async () => {
-    try {
-      setQuizLoading(true);
-      
-      const aiPrompt = `Utwórz 3-5 pytań testowych na podstawie poniższej notatki. Dla każdego pytania podaj 3-4 odpowiedzi oraz zaznacz, która odpowiedź jest prawidłowa. Format: JSON zawierający tablicę obiektów, gdzie każdy obiekt ma pola: 'question', 'options' (tablica możliwych odpowiedzi), 'correctAnswer' (indeks poprawnej odpowiedzi). Oto notatka:\n\n${note.content}`;
-      
-      const response = await fetch("http://localhost:8000/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ message: aiPrompt }),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      if (data && data.response) {
-        try {
-          // Try to extract JSON from the response
-          const jsonStr = data.response.match(/```json\s*([\s\S]*?)\s*```/) || 
-                          data.response.match(/\[\s*\{\s*"question"/);
-          
-          let parsedQuestions;
-          if (jsonStr && jsonStr[1]) {
-            parsedQuestions = JSON.parse(jsonStr[1]);
-          } else {
-            parsedQuestions = JSON.parse(data.response);
-          }
-          
-          setQuizQuestions(parsedQuestions);
-          toast.success("Test został wygenerowany!");
-        } catch (parseError) {
-          console.error("Error parsing quiz questions:", parseError);
-          toast.error("Nie udało się przetworzyć odpowiedzi AI");
-        }
-      } else {
-        toast.error("Nie otrzymano odpowiedzi od AI.");
-      }
-    } catch (error) {
-      console.error("Error generating quiz:", error);
-      toast.error("Wystąpił błąd podczas generowania testu");
-    } finally {
-      setQuizLoading(false);
+  
+const generateQuiz = async () => {
+  try {
+    setQuizLoading(true);
+    setUserAnswers({});
+    setQuizCompleted(false);
+    
+    const aiPrompt = `Utwórz 3-5 pytań testowych w języku polskim na podstawie poniższej notatki. 
+    Dla każdego pytania podaj 3-4 odpowiedzi po polsku oraz zaznacz, która odpowiedź jest prawidłowa. 
+    Format: JSON zawierający tablicę obiektów, gdzie każdy obiekt ma pola: 
+    'question' (pytanie po polsku), 
+    'options' (tablica możliwych odpowiedzi po polsku), 
+    'correctAnswer' (indeks poprawnej odpowiedzi). 
+    Oto notatka:\n\n${note.content}`;
+    
+    const response = await fetch("http://localhost:8000/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ message: aiPrompt }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
-  };
+    
+    const data = await response.json();
+    
+    if (data && data.response) {
+      try {
+        // Try to extract JSON from the response
+        let parsedText = data.response;
+        
+        // Remove markdown code blocks if present
+        const jsonMatch = parsedText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+        if (jsonMatch && jsonMatch[1]) {
+          parsedText = jsonMatch[1];
+        }
+        
+        // Clean the text further if needed
+        parsedText = parsedText.trim();
+        
+        // Parse the JSON
+        const parsedQuestions = JSON.parse(parsedText);
+        
+        setQuizQuestions(parsedQuestions);
+        toast.success("Test został wygenerowany! Rozwiąż go i sprawdź swoją wiedzę.");
+      } catch (parseError) {
+        console.error("Error parsing quiz questions:", parseError);
+        toast.error("Nie udało się przetworzyć odpowiedzi AI");
+      }
+    } else {
+      toast.error("Nie otrzymano odpowiedzi od AI.");
+    }
+  } catch (error) {
+    console.error("Error generating quiz:", error);
+    toast.error("Wystąpił błąd podczas generowania testu");
+  } finally {
+    setQuizLoading(false);
+  }
+};
+
+// Function to handle user selecting an answer
+const handleAnswerSelect = (questionIndex, optionIndex) => {
+  if (quizCompleted) return; // Don't allow changes after quiz is completed
+  
+  setUserAnswers(prev => ({
+    ...prev,
+    [questionIndex]: optionIndex
+  }));
+};
+
+// Function to check answers and complete the quiz
+const checkAnswers = () => {
+  setQuizCompleted(true);
+  
+  // Calculate score
+  let correctCount = 0;
+  quizQuestions.forEach((question, index) => {
+    if (userAnswers[index] === question.correctAnswer) {
+      correctCount++;
+    }
+  });
+  
+  toast.success(`Twój wynik: ${correctCount}/${quizQuestions.length} poprawnych odpowiedzi!`);
+};
+
+// Function to reset the quiz
+const resetQuiz = () => {
+  setUserAnswers({});
+  setQuizCompleted(false);
+};
 
   const fetchNoteDetails = async () => {
     try {
@@ -312,9 +358,9 @@ const NoteDetail = () => {
       </div>
     </div>
 
-    {/* Right section - Action buttons */}
+
     <div className="flex flex-wrap gap-2 justify-end">
-      {/* Icon buttons */}
+
       <div className="flex items-center gap-1">
         <button 
           onClick={updateIsPinned}
@@ -343,7 +389,7 @@ const NoteDetail = () => {
         </button>
       </div>
 
-      {/* Text buttons with responsive labels */}
+     
       <div className="flex flex-wrap gap-2">
         <button 
           onClick={generateSummary}
@@ -447,28 +493,91 @@ const NoteDetail = () => {
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-green-500"></div>
       </div>
     ) : quizQuestions.length > 0 ? (
-      <div className="space-y-6">
-        {quizQuestions.map((question, qIndex) => (
-          <div key={qIndex} className="bg-white border rounded-lg p-4 shadow-sm">
-            <h4 className="font-medium text-base mb-3">{qIndex + 1}. {question.question}</h4>
-            <div className="space-y-2 ml-4">
-              {question.options.map((option, oIndex) => (
-                <div key={oIndex} className="flex items-start gap-2">
-                  <div className={`w-5 h-5 rounded-full flex-shrink-0 mt-0.5 border ${
-                    oIndex === question.correctAnswer 
-                      ? "bg-green-100 border-green-500" 
-                      : "bg-white border-gray-300"
-                  }`}>
-                    {oIndex === question.correctAnswer && (
-                      <div className="w-3 h-3 bg-green-500 rounded-full m-auto"></div>
+      <div className="bg-white border rounded-lg p-6 shadow-sm">
+        <div className="space-y-8">
+          {quizQuestions.map((question, qIndex) => (
+            <div key={qIndex} className="border-b pb-6 last:border-b-0 last:pb-0">
+              <h4 className="font-medium text-lg mb-4">
+                {qIndex + 1}. {question.question}
+              </h4>
+              <div className="space-y-3 ml-4">
+                {question.options.map((option, oIndex) => (
+                  <div 
+                    key={oIndex} 
+                    onClick={() => handleAnswerSelect(qIndex, oIndex)}
+                    className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                      !quizCompleted
+                        ? userAnswers[qIndex] === oIndex
+                          ? "bg-blue-50 border border-blue-200"
+                          : "hover:bg-gray-50 border border-gray-100"
+                        : userAnswers[qIndex] === oIndex && oIndex === question.correctAnswer
+                          ? "bg-green-50 border border-green-200"
+                          : userAnswers[qIndex] === oIndex
+                            ? "bg-red-50 border border-red-200"
+                            : oIndex === question.correctAnswer
+                              ? "bg-green-50 border border-green-200 opacity-50"
+                              : "border border-gray-100"
+                    }`}
+                  >
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center border ${
+                      !quizCompleted
+                        ? userAnswers[qIndex] === oIndex
+                          ? "bg-blue-500 border-blue-500 text-white"
+                          : "bg-white border-gray-300"
+                        : userAnswers[qIndex] === oIndex && oIndex === question.correctAnswer
+                          ? "bg-green-500 border-green-500 text-white"
+                          : userAnswers[qIndex] === oIndex
+                            ? "bg-red-500 border-red-500 text-white"
+                            : oIndex === question.correctAnswer
+                              ? "bg-green-500 border-green-500 text-white opacity-50"
+                              : "bg-white border-gray-300"
+                    }`}>
+                      {String.fromCharCode(65 + oIndex)}
+                    </div>
+                    <span className="flex-1">{option}</span>
+                    {quizCompleted && (
+                      <>
+                        {userAnswers[qIndex] === oIndex && oIndex === question.correctAnswer && (
+                          <MdCheckCircle className="text-green-500 text-xl" />
+                        )}
+                        {userAnswers[qIndex] === oIndex && oIndex !== question.correctAnswer && (
+                          <MdCancel className="text-red-500 text-xl" />
+                        )}
+                        {userAnswers[qIndex] !== oIndex && oIndex === question.correctAnswer && (
+                          <MdCheckCircle className="text-green-500 text-xl opacity-50" />
+                        )}
+                      </>
                     )}
                   </div>
-                  <span>{option}</span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        
+        <div className="mt-8 flex justify-end gap-3">
+          {quizCompleted ? (
+            <button
+              onClick={resetQuiz}
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+            >
+              Rozwiąż ponownie
+            </button>
+          ) : (
+            <button
+              onClick={checkAnswers}
+              disabled={Object.keys(userAnswers).length < quizQuestions.length}
+              className={`px-4 py-2 rounded-md transition-colors flex items-center gap-2 ${
+                Object.keys(userAnswers).length < quizQuestions.length
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-green-600 text-white hover:bg-green-700"
+              }`}
+            >
+              <MdDone className="text-xl" />
+              Zakończ i sprawdź odpowiedzi
+            </button>
+          )}
+        </div>
       </div>
     ) : null}
   </div>

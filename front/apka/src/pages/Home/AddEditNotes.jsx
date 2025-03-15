@@ -7,7 +7,7 @@ import TagInput from '../../components/input/TagInput';
 
 const AddEditNotes = ({ getAllNotes, noteData, type, onClose }) => {
   const [title, setTitle] = useState(noteData?.title || "");
-  const [aiPrompt, setAiPrompt] = useState("");
+  const [aiPrompt, setAiPrompt] = useState("Notatka o ");
   const [content, setContent] = useState(noteData?.content || "");
   const [tags, setTags] = useState(noteData?.tags || "");
   const [error, setError] = useState(null);

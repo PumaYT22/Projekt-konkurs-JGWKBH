@@ -194,24 +194,25 @@ const Home = () => {
             
             <div className='container mx-auto px-4 sm:px-6'>
                 {/* Przycisk przełączania kalendarza */}
-                <div className="flex justify-end mt-4"  >
-                    <button 
-                        className="px-4 py-2 flex items-center bg-blue-100 hover:bg-blue-200 rounded-md text-blue-700 transition-colors duration-300"
-                        onClick={toggleCalendar}
-                    >
-                        <FaCalendarAlt className="mr-2" />
-                        {showCalendar ? 'Ukryj kalendarz' : 'Pokaż kalendarz'}
-                    </button>
-                </div>
-                
+                <div className="flex justify-end mt-4 relative z-10">
+    <button 
+        className="px-4 py-2 flex items-center bg-blue-100 hover:bg-blue-200 rounded-md text-blue-700 transition-colors duration-300 z-20"
+        onClick={toggleCalendar}
+    >
+        <FaCalendarAlt className="mr-2" />
+        {showCalendar ? 'Ukryj kalendarz' : 'Pokaż kalendarz'}
+    </button>
+</div>
                 {/* Kalendarz - widoczny tylko gdy showCalendar jest true */}
                 {showCalendar && (
-                    <Calendar 
-                        setFilteredNotes={setFilteredNotes} 
-                        setIsDateFiltered={setIsDateFiltered} 
-                        allNotes={allNotes} 
-                    />
-                )}
+    <div className="relative z-0"> 
+        <Calendar 
+            setFilteredNotes={setFilteredNotes} 
+            setIsDateFiltered={setIsDateFiltered} 
+            allNotes={allNotes} 
+        />
+    </div>
+)}
                 
                 {/* Informacja o filtrze daty */}
                 {isDateFiltered && (
