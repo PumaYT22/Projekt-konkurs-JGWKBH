@@ -102,7 +102,7 @@ Projekt wykorzystuje Ollama jako lokalny serwer SI do przetwarzania danych.
 3. Opcjonalnie: zainstaluj i skonfiguruj dodatkowe modele SI według potrzeb projektu:
 
 ```bash
-ollama pull llama2
+ollama run deepseek-r1:8b
 ```
 
 ## Struktura projektu
