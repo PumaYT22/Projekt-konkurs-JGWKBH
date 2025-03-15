@@ -33,11 +33,11 @@ const Home = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Check if there's a search query from the location state (when returning from note detail)
+    
     useEffect(() => {
         if (location.state?.searchQuery) {
             onSearchNote(location.state.searchQuery);
-            // Clear the state after using it
+           
             navigate(location.pathname, { replace: true });
         }
     }, [location.state]);

@@ -189,7 +189,7 @@ const AddEditNotes = ({ getAllNotes, noteData, type, onClose }) => {
           value={tags}
           onChange={({ target }) => setTags(target.value)}
         />
-        <TagInput></TagInput>
+        {/* <TagInput tags={tags} setTags={setTags}></TagInput> */}
       </div>
 
       {/* Error display */}

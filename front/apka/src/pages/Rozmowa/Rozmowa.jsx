@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import "./Rozmowa.css";
 import Wave from "./Wave.jsx";
 import Wave_gen from "./Wave_gen.jsx";
+import axiosInstance from "../../utils/axiosInstance.js";
+import {useNavigate, useLocation} from 'react-router-dom'
 
 const Rozmowa = () => {
   const [message, setMessage] = useState("");
@@ -16,8 +18,34 @@ const Rozmowa = () => {
   const tabNameInputRef = useRef(null);
   const [newTabName, setNewTabName] = useState("");
 
+
+ const navigate = useNavigate();
+
+ const getuserinfo = async () => {
+  try {
+      const response = await axiosInstance.get("/get-user");
+      if(response.data && response.data.user) {
+          setUserInfo(response.data.user);
+      }
+  } catch(error) {
+      if(error.response?.status === 401) {
+          localStorage.clear();
+          navigate("/login"); 
+      }
+  }
+};
+
+
+  useEffect(() => {
+    getuserinfo()
+    return () => {
+      
+    };
+  }, []);
   // Inicjalizacja z localStorage
   useEffect(() => {
+
+   
     // Load dark mode preference
     const savedDarkMode = localStorage.getItem("chatDarkMode");
     if (savedDarkMode) {
