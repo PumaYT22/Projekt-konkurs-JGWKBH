@@ -80,7 +80,7 @@ const generateQuiz = async () => {
     'correctAnswer' (indeks poprawnej odpowiedzi). 
     Oto notatka:\n\n${note.content}`;
     
-    const response = await fetch("AICHAT", {
+    const response = await fetch("http://localhost:8000/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
