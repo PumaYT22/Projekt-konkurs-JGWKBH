@@ -47,7 +47,7 @@ const Rozmowa = () => {
     }
   }, []);
 
-  // Save to localStorage whenever state changes
+
   useEffect(() => {
     localStorage.setItem("chatDarkMode", JSON.stringify(darkMode));
   }, [darkMode]);
@@ -60,12 +60,12 @@ const Rozmowa = () => {
     localStorage.setItem("activeChat", JSON.stringify(activeChat));
   }, [activeChat]);
 
-  // Auto-scroll to bottom when messages change
+
   useEffect(() => {
     scrollToBottom();
   }, [chats, isWaiting, activeChat]);
 
-  // Focus input on load and chat change
+
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeChat]);
@@ -88,15 +88,15 @@ const Rozmowa = () => {
 
   const deleteChat = (index) => {
     if (chats.length === 1) {
-      // If it's the last chat, just clear it
+      
       setChats([{ name: "Nowa rozmowa", messages: [] }]);
       setActiveChat(0);
     } else {
-      // Remove the chat
+     
       const newChats = chats.filter((_, i) => i !== index);
       setChats(newChats);
 
-      // Adjust active chat if needed
+      
       if (activeChat === index) {
         setActiveChat(index === 0 ? 0 : index - 1);
       } else if (activeChat > index) {
@@ -118,7 +118,7 @@ const Rozmowa = () => {
   const sendMessage = async () => {
     if (!message.trim()) return;
 
-    // Add user message to current chat
+    
     const updatedChats = [...chats];
     updatedChats[activeChat].messages.push({
       sender: "user",
@@ -153,7 +153,7 @@ const Rozmowa = () => {
 
       const data = await response.json();
 
-      // After small delay to show typing indicator
+      
       setTimeout(() => {
         setIsTyping(false);
         const updatedChatsWithResponse = [...chats];
