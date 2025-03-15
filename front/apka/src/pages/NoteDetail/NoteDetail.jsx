@@ -10,6 +10,7 @@ import AddEditNotes from '../Home/AddEditNotes'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
+import { AICHAT } from '../../utils/constants'
 
 const NoteDetail = () => {
   const { id } = useParams();
@@ -34,7 +35,7 @@ const [quizCompleted, setQuizCompleted] = useState(false);
       
       const aiPrompt = `Skróć następującą notatkę, zachowując najważniejsze informacje:\n\n${note.content}`;
       
-      const response = await fetch("http://localhost:8000/chat", {
+      const response = await fetch(AICHAT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -79,7 +80,7 @@ const generateQuiz = async () => {
     'correctAnswer' (indeks poprawnej odpowiedzi). 
     Oto notatka:\n\n${note.content}`;
     
-    const response = await fetch("http://localhost:8000/chat", {
+    const response = await fetch("AICHAT", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

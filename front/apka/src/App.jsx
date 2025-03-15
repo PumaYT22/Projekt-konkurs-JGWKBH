@@ -11,7 +11,7 @@ import Calendar from "./components/Calendar/Calendar";
 const routes = (
   <Router>
     <Routes>
-      <Route path="/" exact element={<Home />}></Route>
+      <Route path="/" exact element={<Login />}></Route>
       <Route path="/dashboard" exact element={<Home />}></Route>
       <Route path="/login" exact element={<Login />}></Route>
       <Route path="/signUp" exact element={<SingUp />}></Route>

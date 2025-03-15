@@ -18,7 +18,7 @@ const app=express();
 const jwt=require("jsonwebtoken")
 const {authenticateToken} =require("./utilities")
 
-const OLLAMA_URL = "http://localhost:11434";
+const OLLAMA_URL = `http://${config.localhost}:11434`;
 
 app.use(express.json());
 

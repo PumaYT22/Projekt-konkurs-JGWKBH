@@ -4,6 +4,7 @@ import { FaSave } from 'react-icons/fa';
 import axiosInstance from '../../utils/axiosInstance';
 import { toast } from 'react-toastify';
 import TagInput from '../../components/input/TagInput';
+import { AICHAT } from '../../utils/constants';
 
 const AddEditNotes = ({ getAllNotes, noteData, type, onClose }) => {
   const [title, setTitle] = useState(noteData?.title || "");
@@ -22,8 +23,8 @@ const AddEditNotes = ({ getAllNotes, noteData, type, onClose }) => {
     
     setIsGenerating(true);
     try {
-     
-      const response = await fetch("http://localhost:8000/chat", {
+      
+      const response = await fetch(AICHAT, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

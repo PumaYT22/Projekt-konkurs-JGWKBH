@@ -4,6 +4,7 @@ import Wave from "./Wave.jsx";
 import Wave_gen from "./Wave_gen.jsx";
 import axiosInstance from "../../utils/axiosInstance.js";
 import {useNavigate, useLocation,Link} from 'react-router-dom'
+import { AICHAT } from "../../utils/constants.js";
 
 const Rozmowa = () => {
   const [message, setMessage] = useState("");
@@ -163,7 +164,7 @@ const Rozmowa = () => {
       // Simulate typing effect
       setIsTyping(true); // halat
 
-      const response = await fetch("http://localhost:8000/chat", {
+      const response = await fetch(AICHAT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
