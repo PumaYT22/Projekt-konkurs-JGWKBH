@@ -23,7 +23,7 @@ Przed rozpoczęciem instalacji upewnij się, że masz zainstalowane:
 1. Pobierz repozytorium projektu "Projekt-konkurs-JGWKBH" i umieść je w wybranym folderze:
 
 ```bash
-git clone https://github.com/username/Projekt-konkurs-JGWKBH.git
+git clone https://github.com/PumaYT22/Projekt-konkurs-JGWKBH.git
 ```
 
 2. Otwórz folder projektu w Visual Studio Code
