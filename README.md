@@ -138,6 +138,7 @@ Projekt-konkurs-JGWKBH/
 
 ---
 ## Moduły zawarte w projekcie
+-
 ├── @capacitor/android@7.1.0
 ├── @capacitor/app@7.0.0
 ├── @capacitor/cli@7.1.0
@@ -170,6 +171,7 @@ Projekt-konkurs-JGWKBH/
 ├── remark-gfm@4.0.1
 ├── tailwindcss@4.0.14
 └── vite@6.2.2
+-
 ---
 
 W przypadku innych problemów, odwiedź [repozytorium projektu](https://github.com/username/Projekt-konkurs-JGWKBH/issues) lub skontaktuj się z autorami.
