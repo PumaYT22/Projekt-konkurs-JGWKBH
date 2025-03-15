@@ -17,4 +17,10 @@
 2. Komendą cd przejdź przez `cd Projekt-konkurs-JGWKBH` > `cd backend`
 3. Wpisz i zainstaluj `npm i nodemon`
 4. wpisz i uruchom usługę `npm run start`
+5. w folderze backend utwórz plik `.env` z treścią `ACCESS_TOKEN_SECRET=ssdaads`
+
+## Pobieranie servera SI
+1. Pobierz Ollama `(https://ollama.com/download)`
+2. Zainstaluj na komputerze systen Ollama
+3. Otwórz cmd i pobierz model językowy `ollama run deepseek-r1:8b`
 
