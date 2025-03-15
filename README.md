@@ -138,7 +138,7 @@ Projekt-konkurs-JGWKBH/
 
 ---
 ## Moduły zawarte w projekcie
--
+
 @capacitor/android@7.1.0
 
 @capacitor/app@7.0.0
