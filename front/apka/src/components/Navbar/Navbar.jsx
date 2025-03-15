@@ -26,7 +26,7 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
     setSearchQuery("")
     handleClearSearch()
   }
-  
+  // console.log(userInfo)
   return (
     <div className='bg-white shadow-md top-0 z-1'>
       {/* Desktop/Tablet Navbar */}
