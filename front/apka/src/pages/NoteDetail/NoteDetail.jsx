@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axiosInstance from '../../utils/axiosInstance'
 import moment from 'moment'
-import { MdOutlinePushPin, MdCreate, MdDelete, MdArrowBack } from 'react-icons/md'
+import { MdOutlinePushPin, MdCreate, MdDelete, MdArrowBack, MdOutlineAutoAwesomeMotion } from 'react-icons/md'
 import Navbar from '../../components/Navbar/Navbar'
 import { toast, ToastContainer } from 'react-toastify'
 import Modal from 'react-modal'
@@ -18,8 +18,46 @@ const NoteDetail = () => {
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [openEditModal, setOpenEditModal] = useState(false);
+
+  const [summary, setSummary] = useState("");
+  const [summaryLoading, setSummaryLoading] = useState(false);
   
-  // Fetch note details
+
+  const generateSummary = async () => {
+    try {
+      setSummaryLoading(true);
+      
+      const aiPrompt = `Skróć następującą notatkę, zachowując najważniejsze informacje:\n\n${note.content}`;
+      
+      const response = await fetch("http://localhost:8000/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ message: aiPrompt }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data && data.response) {
+        setSummary(data.response);
+        toast.success("Streszczenie wygenerowane pomyślnie!");
+      } else {
+        toast.error("Nie otrzymano odpowiedzi od AI.");
+      }
+    } catch (error) {
+      console.error("Error generating summary:", error);
+      toast.error("Wystąpił błąd podczas generowania streszczenia");
+    } finally {
+      setSummaryLoading(false);
+    }
+  };
+
   const fetchNoteDetails = async () => {
     try {
       setLoading(true);
@@ -242,6 +280,21 @@ const NoteDetail = () => {
                   >
                     <MdDelete className="text-2xl" />
                   </button>
+
+                  
+                  <button 
+                    onClick={generateSummary}
+                    className="p-2 px-3 rounded-md bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors flex items-center gap-1"
+                    title="Skróć notatkę"
+                    disabled={summaryLoading}
+                  >
+                    {summaryLoading ? (
+                      <div className="w-4 h-4 border-2 border-purple-700 border-t-transparent rounded-full animate-spin mr-1"></div>
+                    ) : (
+                      <MdOutlineAutoAwesomeMotion className="text-xl" />
+                    )}
+                    <span>Skróć notatkę</span>
+                  </button>
                 </div>
               </div>
               
@@ -284,6 +337,27 @@ const NoteDetail = () => {
           </div>
         )}
       </div>
+
+      {(summaryLoading || summary) && (
+  <div className="mt-8">
+    <h3 className="font-bold text-lg mb-3 border-b pb-2">Streszczenie notatki</h3>
+    
+    {summaryLoading ? (
+      <div className="flex justify-center items-center h-20">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-purple-500"></div>
+      </div>
+    ) : summary ? (
+      <div className="p-4 bg-purple-50 rounded-lg border border-purple-100">
+        <ReactMarkdown 
+          remarkPlugins={[remarkGfm]} 
+          rehypePlugins={[rehypeRaw]}
+        >
+          {cleanMarkdownContent(summary)}
+        </ReactMarkdown>
+      </div>
+    ) : null}
+  </div>
+)}
       
       {/* Edit Modal */}
       <Modal 
