@@ -43,6 +43,7 @@ cd apka
 ```bash
 npm install tailwindcss @tailwindcss/vite
 npm i react-router-dom
+npm i vite
 npm i
 ```
 
@@ -87,6 +88,9 @@ npm run start
 ```
 
 Poprawne uruchomienie powinno być potwierdzone komunikatem w terminalu.
+Przykładowy użytkownik z notatkami
+email: testuser@gmail.com
+hasło: testuser@123
 
 ## Konfiguracja serwera SI
 
